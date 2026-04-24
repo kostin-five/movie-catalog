@@ -17,6 +17,7 @@
   font-weight: bold;
   color: #e50914;
   letter-spacing: 1px;
+  cursor: pointer;
 }
 
 .searchInput {
