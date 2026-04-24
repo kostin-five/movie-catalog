@@ -1,0 +1,40 @@
+.header {
+  background-color: #000000;
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+  color: #e50914;
+  letter-spacing: 1px;
+}
+
+.searchInput {
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  width: 300px;
+  font-size: 16px;
+  background-color: #333333;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.searchInput:focus {
+  background-color: #444444;
+}
+
+.searchInput::placeholder {
+  color: #aaaaaa;
+}
