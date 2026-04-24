@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import MovieList from "../components/MovieList/MovieList";
 import axios from "axios";
 
-const Home = () => {
+const Home = ({ query }) => {
   const [movies, setMovies] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -14,7 +14,10 @@ const Home = () => {
     };
     fetchData();
   }, []);
-  return <MovieList movies={movies} />;
+
+  const filteredMovies = movies.filter((movie) => movie.title.toLowerCase().includes(query.toLowerCase()));
+
+  return <MovieList movies={filteredMovies} />;
 };
 
 export default Home;
