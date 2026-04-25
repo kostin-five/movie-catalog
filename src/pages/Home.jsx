@@ -1,28 +1,46 @@
 // import React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MovieList from "../components/MovieList/MovieList";
 import MovieService from "../API/MovieService";
 import { useFetching } from "../hooks/useFetching";
 
 const Home = ({ query }) => {
   const [movies, setMovies] = useState([]);
-  const [fetchMovies, isMovieLoading, movieError] = useFetching(async () =>
-    setMovies(await MovieService.getMovies())
+  const [page, setPage] = useState(1);
+  const [fetchMovies, isMovieLoading, movieError] = useFetching(
+    async (currentPage) => {
+      const newMovies = await MovieService.getMovies(currentPage);
+      return setMovies((prevMovies) => [...prevMovies, ...newMovies]);
+    }
   );
+
+  const lastElement = useRef();
+
   useEffect(() => {
-    fetchMovies();
-  }, []);
+    if (isMovieLoading) return;
+
+    const observerCallback = (entries) => {
+      if (entries[0].isIntersecting) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    };
+    const observer = new IntersectionObserver(observerCallback);
+
+    if (lastElement.current) {
+      observer.observe(lastElement.current);
+    }
+
+    return () => observer.disconnect();
+  }, [isMovieLoading]);
+
+  useEffect(() => {
+    fetchMovies(page);
+  }, [page]);
 
   const filteredMovies = movies.filter((movie) =>
     movie.title.toLowerCase().includes(query.toLowerCase())
   );
 
-  console.log("Состояние:", {
-    isMovieLoading,
-    movieError,
-    moviesCount: movies.length,
-  });
-  
   if (movieError) {
     return (
       <h1 style={{ color: "red", padding: "50px" }}>
@@ -30,10 +48,13 @@ const Home = ({ query }) => {
       </h1>
     );
   }
-  return isMovieLoading ? (
-    <h1>Идет загрузка...</h1>
-  ) : (
-    <MovieList movies={filteredMovies} />
+
+  return (
+    <>
+      <MovieList movies={filteredMovies} />
+      {isMovieLoading && <h1>Идет загрузка...</h1>}
+      <div ref={lastElement}></div>
+    </>
   );
 };
 

@@ -14,7 +14,14 @@ const MovieDetails = () => {
     fetchMovie();
   }, []);
 
-  
+  if (movieError) {
+    return (
+      <h1 style={{ color: "red", padding: "50px" }}>
+        Ошибка сети: {movieError}
+      </h1>
+    );
+  }
+
   return isMovieLoading || !movie.id ? (
     <h1>Идет загрузка...</h1>
   ) : (
