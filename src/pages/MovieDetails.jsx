@@ -2,19 +2,22 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import MovieService from "../API/MovieService";
 import styles from "./MovieDetails.module.css";
+import { useFetching } from "../hooks/useFetching";
 
 const MovieDetails = () => {
   const params = useParams();
   const [movie, setMovie] = useState({});
+  const [fetchMovie, isMovieLoading, movieError] = useFetching(async () => {
+    setMovie(await MovieService.getMovie(params.id));
+  });
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await MovieService.getMovie(params.id);
-      setMovie(response);
-    };
-    fetchData();
+    fetchMovie();
   }, []);
 
-  return (
+  
+  return isMovieLoading || !movie.id ? (
+    <h1>Идет загрузка...</h1>
+  ) : (
     <div className={styles.container}>
       <img
         className={styles.poster}
