@@ -33,6 +33,8 @@ const Home = ({ query }) => {
   if (query !== prevQuery) {
     setPrevQuery(query);
     setPage(1);
+    setMovies([]);
+    setHasMore(true);
   }
 
   const lastElement = useRef();
