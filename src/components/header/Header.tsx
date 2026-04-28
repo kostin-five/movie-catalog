@@ -1,8 +1,14 @@
 // import React from "react";
 import { Link } from "react-router-dom";
 import styles from "./Header.module.css";
+import { ChangeEvent, ReactNode } from "react";
 
-const Header = ({query, setQuery}) => {
+type typeHeaderProps = {
+  query: string;
+  setQuery: (value: string) => void;
+};
+
+const Header = ({ query, setQuery }: typeHeaderProps): ReactNode | null => {
   return (
     <header className={styles.header}>
       <div className={"container " + styles.wrapper}>
@@ -10,7 +16,9 @@ const Header = ({query, setQuery}) => {
           MovieBrowser
         </Link>
         <input
-          onChange={(event) => setQuery(event.target.value)}
+          onChange={(event: ChangeEvent<HTMLInputElement>) =>
+            setQuery(event.target.value)
+          }
           type="text"
           className={styles.searchInput}
           placeholder="Поиск фильмов..."

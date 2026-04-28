@@ -1,19 +1,21 @@
 // import React from "react";
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import MovieList from "../components/MovieList/MovieList";
 import MovieService from "../API/MovieService";
 import { useFetching } from "../hooks/useFetching";
 import { ClipLoader } from "react-spinners";
 import useObserver from "../hooks/useObserver";
+import { IMovie } from "../types/types";
+type queryType = { query: string };
 
-const Home = ({ query }) => {
-  const [movies, setMovies] = useState([]);
-  const [page, setPage] = useState(1);
-  const [prevQuery, setPrevQuery] = useState(query);
-  const [hasMore, setHasMore] = useState(true);
+const Home = ({ query }: queryType): ReactNode | null => {
+  const [movies, setMovies] = useState<IMovie[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [prevQuery, setPrevQuery] = useState<string>(query);
+  const [hasMore, setHasMore] = useState<boolean>(true);
 
   const [fetchMovies, isMovieLoading, movieError] = useFetching(
-    async (currentPage, currentQuery) => {
+    async (currentPage, currentQuery): Promise<void> => {
       const newMovies = await MovieService.getMovies(currentPage, currentQuery);
 
       if (newMovies.length < 20) {
@@ -37,13 +39,13 @@ const Home = ({ query }) => {
     setHasMore(true);
   }
 
-  const lastElement = useRef();
+  const lastElement = useRef<HTMLDivElement>(null);
 
   useObserver(lastElement, !isMovieLoading && hasMore, () =>
     setPage((prevPage) => prevPage + 1)
   );
 
-  useEffect(() => {
+  useEffect((): void => {
     fetchMovies(page, query);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, query]);

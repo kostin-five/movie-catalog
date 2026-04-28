@@ -1,8 +1,14 @@
 // import React from "react";
 import { Link } from "react-router-dom";
 import styles from "./MovieCard.module.css";
+import { IMovie } from "../../types/types";
+import { ReactNode } from "react";
 
-const MovieCard = ({ movie }) => {
+interface MovieItemProps {
+  movie: IMovie;
+}
+
+const MovieCard = ({ movie }: MovieItemProps): ReactNode | null => {
   return (
     <Link to={`/movie/${movie.id}`} className={styles.card}>
       <img

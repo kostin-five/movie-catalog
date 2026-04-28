@@ -1,19 +1,22 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import MovieService from "../API/MovieService";
 import styles from "./MovieDetails.module.css";
 import { useFetching } from "../hooks/useFetching";
+import { IMovie } from "../types/types";
 
-const MovieDetails = () => {
-  const params = useParams();
-  const [movie, setMovie] = useState({});
-  const [fetchMovie, isMovieLoading, movieError] = useFetching(async () => {
-    setMovie(await MovieService.getMovie(params.id));
-  });
+const MovieDetails = (): ReactNode | null => {
+  const params = useParams<{ id: string }>();
+  const [movie, setMovie] = useState<IMovie | null>(null);
+  const [fetchMovie, isMovieLoading, movieError] = useFetching(
+    async (): Promise<void> => {
+      setMovie(await MovieService.getMovie(Number(params.id)));
+    }
+  );
   useEffect(() => {
-    fetchMovie();
+    params.id && fetchMovie();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [params.id]);
 
   if (movieError) {
     return (
@@ -23,7 +26,7 @@ const MovieDetails = () => {
     );
   }
 
-  return isMovieLoading || !movie.id ? (
+  return isMovieLoading || !movie ? (
     <h1>Идет загрузка...</h1>
   ) : (
     <div className={styles.container}>

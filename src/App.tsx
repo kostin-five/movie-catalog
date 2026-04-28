@@ -5,7 +5,7 @@ import Header from "./components/header/Header";
 import { useState } from "react";
 
 function App() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState<string>("");
 
   return (
     <BrowserRouter>
